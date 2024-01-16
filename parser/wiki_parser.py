@@ -56,7 +56,7 @@ class WikiParserSmarter(WikiParser):
     def __init__(self):
         self.session = requests.Session()
 
-    def __get_backlinks_from_page(self, page_name: str, count_backlinks=500) -> str:
+    def __get_backlinks_from_page(self, page_name: str, count_backlinks=500):
         # See: https://en.wikipedia.org/w/api.php?action=help&modules=parse
         # https://en.wikipedia.org/w/api.php, https://ru.wikipedia.org/w/api.php
         params_query = {
@@ -64,7 +64,7 @@ class WikiParserSmarter(WikiParser):
             'bltitle': page_name,
             'format': 'json',
             'list': 'backlinks',
-            'bllimit':  count_backlinks
+            'bllimit': count_backlinks
         }
 
         req = self.session.get(url=self.URL, params=params_query)
@@ -76,7 +76,8 @@ class WikiParserSmarter(WikiParser):
         # print(data['query']['backlinks'])
 
         return data['query']['backlinks']
-    def __get_links_from_page(self, page_name: str) -> str:
+
+    def __get_links_from_page(self, page_name: str):
         # See: https://en.wikipedia.org/w/api.php?action=help&modules=parse
         # https://en.wikipedia.org/w/api.php, https://ru.wikipedia.org/w/api.php
 
@@ -95,7 +96,10 @@ class WikiParserSmarter(WikiParser):
         # print(data['parse'].keys())
         # print(data['parse']['links'])
 
-        return data['parse']['links']
+        try:
+            return data['parse']['links']
+        except:
+            return []
 
     def get_links(self, page_name: str) -> list[str]:
         logger.info(f"Parsing links from '{page_name}'")
@@ -104,13 +108,13 @@ class WikiParserSmarter(WikiParser):
         links = set()
 
         for raw_link in raw_links:
-            title = raw_link['*'] # like a name
+            title = raw_link['*']  # like a name
             # Avoid beginnings
             # Help: Wikipedia: Special: Category: Template: User talk:
             if ':' not in title:
                 links.add(title)
 
-        return [i for i in links]
+        return list(links)
 
     def get_backlinks(self, page_name: str) -> list[str]:
         logger.info(f"Parsing backlinks from '{page_name}'")
@@ -119,7 +123,7 @@ class WikiParserSmarter(WikiParser):
         links = set()
 
         for raw_link in raw_links:
-            title = raw_link['title'] # like a name
+            title = raw_link['title']  # like a name
             # Avoid beginnings
             # Help: Wikipedia: Special: Category: Template: User talk:
             if ':' not in title:
@@ -127,8 +131,6 @@ class WikiParserSmarter(WikiParser):
 
         return [i for i in links]
 
-
 # wiki = WikiParserSmarter()
 
 # print(wiki.get_backlinks("cat"))
-

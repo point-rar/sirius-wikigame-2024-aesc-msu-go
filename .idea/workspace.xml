@@ -4,14 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="31bfab82-7354-420f-83d5-5e0fcdabf680" name="Changes" comment="Build server and interacting with server">
-      <change afterPath="$PROJECT_DIR$/game/wiki_game_smart.py" afterDir="false" />
+    <list default="true" id="31bfab82-7354-420f-83d5-5e0fcdabf680" name="Changes" comment="Added changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game/wiki_game_dumb.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/wiki_game_dumb.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/wiki_game_smart.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/wiki_game_smart.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/page.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/page.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parser/wiki_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/parser/wiki_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/send_request.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/send_request.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +55,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
-      <option name="PARAMETERS" value="-s &quot;Beer&quot; -e &quot;Dick&quot; -dep 3" />
+      <option name="PARAMETERS" value="-s &quot;Beer&quot; -e &quot;Cat&quot;" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -145,12 +142,20 @@
       <option name="project" value="LOCAL" />
       <updated>1705417573872</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Added changes">
+      <created>1705433543712</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1705433543712</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Fixed wikiparser (make it faster and add backlinks)" />
     <MESSAGE value="Build server and interacting with server" />
-    <option name="LAST_COMMIT_MESSAGE" value="Build server and interacting with server" />
+    <MESSAGE value="Added changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added changes" />
   </component>
 </project>

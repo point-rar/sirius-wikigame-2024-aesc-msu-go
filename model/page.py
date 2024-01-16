@@ -8,7 +8,7 @@ class Page:
         self.page_name = page_name
         self.depth = depth
 
-    def __le__(self, other):
+    def __lt__(self, other):
         return self.page_name < other.page_name
 
     # restoring the path through prev-links

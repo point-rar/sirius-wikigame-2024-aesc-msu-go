@@ -131,3 +131,4 @@ class WikiParserSmarter(WikiParser):
 # wiki = WikiParserSmarter()
 
 # print(wiki.get_backlinks("cat"))
+

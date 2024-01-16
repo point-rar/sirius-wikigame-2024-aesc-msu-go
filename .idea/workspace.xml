@@ -4,15 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="31bfab82-7354-420f-83d5-5e0fcdabf680" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/2024-winter-sirius-wikigame-template.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/2024-winter-sirius-wikigame-template.iml" afterDir="false" />
+    <list default="true" id="31bfab82-7354-420f-83d5-5e0fcdabf680" name="Changes" comment="Fixed wikiparser (make it faster and add backlinks)">
+      <change afterPath="$PROJECT_DIR$/model/server_request.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/send_request.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parser/wiki_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/parser/wiki_parser.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -32,7 +42,7 @@
     "last_opened_file_path": "C:/Users/vinik/PycharmProjects/test"
   }
 }]]></component>
-  <component name="RunManager" selected="Python.wiki_parser">
+  <component name="RunManager" selected="Python.send_request">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python">
       <module name="2024-winter-sirius-wikigame-template" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -47,7 +57,28 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
-      <option name="PARAMETERS" value="-s &quot;Bottle&quot; -e &quot;Requirement&quot; -dep 3 --debug" />
+      <option name="PARAMETERS" value="-s &quot;Beer&quot; -e &quot;Dick&quot; -dep 3" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="send_request" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="2024-winter-sirius-wikigame-template" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/server" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/server/send_request.py" />
+      <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -78,6 +109,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.send_request" />
         <item itemvalue="Python.wiki_parser" />
       </list>
     </recent_temporary>
@@ -91,6 +123,18 @@
       <option name="presentableId" value="Default" />
       <updated>1705389431674</updated>
     </task>
+    <task id="LOCAL-00001" summary="Fixed wikiparser (make it faster and add backlinks)">
+      <created>1705407800978</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1705407800978</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Fixed wikiparser (make it faster and add backlinks)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed wikiparser (make it faster and add backlinks)" />
   </component>
 </project>

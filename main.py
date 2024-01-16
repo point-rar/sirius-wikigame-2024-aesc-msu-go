@@ -6,7 +6,7 @@ import sys
 from argparse import ArgumentParser
 from loguru import logger
 
-from game.wiki_game_dumb import WikiGameDumb
+from game.wiki_game_smart import WikiGameSmart
 from game.wiki_game_async import WikiGameAsync
 
 if __name__ == '__main__':
@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
     wiki_game = None
     if args.gametype == 'dumb':
-        wiki_game = WikiGameDumb()
+        wiki_game = WikiGameSmart()
     elif args.gametype == 'async':
         wiki_game = WikiGameAsync()
 

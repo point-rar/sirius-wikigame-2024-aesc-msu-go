@@ -8,6 +8,8 @@ from loguru import logger
 
 from parser.wiki_parser import WikiParserDumb
 
+import queue
+
 
 # The simplest implementation with sequential page parsing using BFS
 class WikiGameDumb(WikiGame):

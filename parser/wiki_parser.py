@@ -97,7 +97,7 @@ class WikiParserSmarter(WikiParser):
 
         return data['parse']['links']
 
-    def get_links(self, page_name: str) -> set[Link]:
+    def get_links(self, page_name: str) -> list[str]:
         logger.info(f"Parsing links from '{page_name}'")
         raw_links = self.__get_links_from_page(page_name)
 
@@ -108,11 +108,11 @@ class WikiParserSmarter(WikiParser):
             # Avoid beginnings
             # Help: Wikipedia: Special: Category: Template: User talk:
             if ':' not in title:
-                links.add(Link(title))
+                links.add(title)
 
-        return links
+        return [i for i in links]
 
-    def get_backlinks(self, page_name: str) -> set[Link]:
+    def get_backlinks(self, page_name: str) -> list[str]:
         logger.info(f"Parsing backlinks from '{page_name}'")
         raw_links = self.__get_backlinks_from_page(page_name)
 
@@ -123,9 +123,9 @@ class WikiParserSmarter(WikiParser):
             # Avoid beginnings
             # Help: Wikipedia: Special: Category: Template: User talk:
             if ':' not in title:
-                links.add(Link(title))
+                links.add(title)
 
-        return links
+        return [i for i in links]
 
 
 # wiki = WikiParserSmarter()

@@ -64,9 +64,8 @@ class WikiGameSmart(WikiGame):
 
             t1 = time.time()
             links = self.wiki_parser.get_links(cur_page.page_name)
-            t1 = time.time()
-            costs = get_score(links, end_page_name)
             print(time.time() - t1)
+            costs = get_score(links, end_page_name)
             for i in range(len(links)):
                 # next_page_name = link.title
                 link = links[i]
@@ -111,7 +110,9 @@ class WikiGameSmart(WikiGame):
                 f"Queue size: {q.qsize()}"
             )
 
+            t1 = time.time()
             links = self.wiki_parser.get_backlinks(cur_page.page_name)
+            print(time.time() - t1)
             costs = get_score(links, end_page_name)
             for i in range(len(links)):
                 # next_page_name = link.title

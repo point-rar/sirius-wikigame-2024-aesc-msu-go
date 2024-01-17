@@ -85,10 +85,11 @@ class WikiParserSmarter(WikiParser):
         # https://en.wikipedia.org/w/api.php, https://ru.wikipedia.org/w/api.php
 
         params_parse = {
-            'action': 'parse',
-            'page': page_name,
+            'action': 'query',
+            'titles': page_name,
             'format': 'json',
-            'props': 'links'
+            'prop': 'links',
+            'pllimit': 2000
         }
 
         req = self.session.get(url=self.URL, params=params_parse)
@@ -99,8 +100,12 @@ class WikiParserSmarter(WikiParser):
         # print(data['parse'].keys())
         # print(data['parse']['links'])
 
+        # print(data['query']['pages'])
+        #
+        # print(list(i['links'] for i in data['query']['pages'].values()))
+
         try:
-            return data['parse']['links']
+            return [i['links'] for i in data['query']['pages'].values()][0]
         except:
             return []
 
@@ -111,7 +116,7 @@ class WikiParserSmarter(WikiParser):
         links = set()
 
         for raw_link in raw_links:
-            title = raw_link['*']  # like a name
+            title = raw_link['title']  # like a name
             # Avoid beginnings
             # Help: Wikipedia: Special: Category: Template: User talk:
             if ':' not in title:

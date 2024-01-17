@@ -6,6 +6,7 @@ import gensim
 from gensim import downloader
 from flask import Flask, request
 import json
+import os
 
 # glove_file = datapath('glove.6B.300d.txt')
 

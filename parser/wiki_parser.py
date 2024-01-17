@@ -1,3 +1,4 @@
+import time
 from abc import ABC, abstractmethod
 
 import requests
@@ -56,7 +57,7 @@ class WikiParserSmarter(WikiParser):
     def __init__(self):
         self.session = requests.Session()
 
-    def __get_backlinks_from_page(self, page_name: str, count_backlinks=500):
+    def __get_backlinks_from_page(self, page_name: str, count_backlinks=5000):
         # See: https://en.wikipedia.org/w/api.php?action=help&modules=parse
         # https://en.wikipedia.org/w/api.php, https://ru.wikipedia.org/w/api.php
         params_query = {
@@ -80,7 +81,7 @@ class WikiParserSmarter(WikiParser):
         except:
             return []
 
-    def __get_links_from_page(self, page_name: str, count=500):
+    def __get_links_from_page(self, page_name: str, count_links=5000):
         # See: https://en.wikipedia.org/w/api.php?action=help&modules=parse
         # https://en.wikipedia.org/w/api.php, https://ru.wikipedia.org/w/api.php
 
@@ -89,10 +90,12 @@ class WikiParserSmarter(WikiParser):
             'titles': page_name,
             'format': 'json',
             'prop': 'links',
-            'pllimit': count
+            'pllimit': count_links
         }
 
+        t1 = time.time()
         req = self.session.get(url=self.URL, params=params_parse)
+        print(time.time() - t1)
         data = req.json()
 
         # print(data.keys())

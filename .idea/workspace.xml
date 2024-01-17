@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="31bfab82-7354-420f-83d5-5e0fcdabf680" name="Changes" comment="Optimizer api">
+    <list default="true" id="31bfab82-7354-420f-83d5-5e0fcdabf680" name="Changes" comment="Optimizer api (real version)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game/wiki_game_smart.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/wiki_game_smart.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parser/wiki_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/parser/wiki_parser.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -55,7 +54,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
-      <option name="PARAMETERS" value="-s &quot;Ulyanovsk&quot; -e &quot;Soldier&quot; --gametype &quot;smart&quot;" />
+      <option name="PARAMETERS" value="-s &quot;Knuth–Morris–Pratt_algorithm&quot; -e &quot;Moscow&quot; --gametype &quot;smart&quot;" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -172,7 +171,14 @@
       <option name="project" value="LOCAL" />
       <updated>1705490838976</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Optimizer api (real version)">
+      <created>1705491373472</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1705491373472</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -182,6 +188,7 @@
     <MESSAGE value="Added smarter way to get link" />
     <MESSAGE value="Mega smart way" />
     <MESSAGE value="Optimizer api" />
-    <option name="LAST_COMMIT_MESSAGE" value="Optimizer api" />
+    <MESSAGE value="Optimizer api (real version)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Optimizer api (real version)" />
   </component>
 </project>

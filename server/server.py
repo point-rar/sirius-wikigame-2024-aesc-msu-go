@@ -28,4 +28,5 @@ def get_query():
     return json.dumps({"result": result}), 200
 
 
-app.run()
+port = int(os.environ.get("PORT", 5000))
+app.run(host='127.0.0.1', port=port)

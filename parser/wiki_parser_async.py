@@ -32,7 +32,7 @@ class WikiParserSmarter(WikiParser):
             'bllimit': count_backlinks
         }
 
-        req = self.session.get(url=self.URL, params=params_query)
+        req = await self.session.get(url=self.URL, params=params_query)
         data = req.json()
 
         # print(data.keys())
@@ -58,7 +58,7 @@ class WikiParserSmarter(WikiParser):
         }
 
         t1 = time.time()
-        req = self.session.get(url=self.URL, params=params_parse)
+        req = await self.session.get(url=self.URL, params=params_parse)
         print(time.time() - t1)
         data = req.json()
 
@@ -78,7 +78,7 @@ class WikiParserSmarter(WikiParser):
 
     async def get_links(self, page_name: str) -> list[str]:
         logger.info(f"Parsing links from '{page_name}'")
-        raw_links = self.__get_links_from_page(page_name)
+        raw_links = await self.__get_links_from_page(page_name)
 
         links = set()
 
@@ -93,7 +93,7 @@ class WikiParserSmarter(WikiParser):
 
     async def get_backlinks(self, page_name: str) -> list[str]:
         logger.info(f"Parsing backlinks from '{page_name}'")
-        raw_links = self.__get_backlinks_from_page(page_name)
+        raw_links = await self.__get_backlinks_from_page(page_name)
 
         links = set()
 

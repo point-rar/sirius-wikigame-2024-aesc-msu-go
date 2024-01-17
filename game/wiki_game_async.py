@@ -1,5 +1,6 @@
 import time
 from typing import Optional
+import asyncio
 
 from game.wiki_game import WikiGame
 from model.page import Page
@@ -41,6 +42,12 @@ class WikiGameAsync(WikiGame):
 
         return path_to
 
+    async def get_async_links(self, links, cur_page):
+        links = await self.wiki_parser.get_links(cur_page.page_name)
+
+    async def get_async_links(self, links, cur_page):
+        links = await self.wiki_parser.get_links(cur_page.page_name)
+
     def play_smart(self, start_page_name: str, end_page_name: str, max_depth: int = None) -> Optional[Path]:
         logger.info(
             "Started playing\n\t" +
@@ -63,7 +70,8 @@ class WikiGameAsync(WikiGame):
             )
 
             t1 = time.time()
-            links = self.wiki_parser.get_links(cur_page.page_name)
+            links = []
+            asyncio.run(self.get_async_links(links, cur_page))
             # print(time.time() - t1)
             logger.info(f"{time.time() - t1} second per wiki query")
             costs = get_score(links, end_page_name)
@@ -112,7 +120,7 @@ class WikiGameAsync(WikiGame):
             )
 
             t1 = time.time()
-            links = self.wiki_parser.get_backlinks(cur_page.page_name)
+            links = await self.wiki_parser.get_backlinks(cur_page.page_name)
             # print(time.time() - t1)
             logger.info(f"{time.time() - t1} second per wiki query")
 

@@ -6,6 +6,7 @@ import gensim
 from gensim import downloader
 from flask import Flask, request
 import json
+import os
 
 # glove_file = datapath('glove.6B.300d.txt')
 
@@ -28,4 +29,5 @@ def get_query():
     return json.dumps({"result": result}), 200
 
 
-app.run()
+port = int(os.environ.get("PORT", 5000))
+app.run(host='127.0.0.1', port=port)

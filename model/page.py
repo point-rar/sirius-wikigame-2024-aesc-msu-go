@@ -23,6 +23,6 @@ class Page:
         path.append(cur_page.page_name)
         path.reverse()
 
-        logger.success("Path is:\n\t" + " -> ".join([f"'{p}'" for p in path]))
+        # logger.success("Path is:\n\t" + " -> ".join([f"'{p}'" for p in path]))
 
         return Path(path)

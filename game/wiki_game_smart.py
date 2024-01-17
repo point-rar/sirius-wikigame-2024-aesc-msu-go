@@ -28,7 +28,18 @@ class WikiGameSmart(WikiGame):
 
         return value
 
-    def play(self, start_page_name: str, end_page_name: str, max_depth: int = None) -> Optional[Path]:
+    def play(self, start_page_name: str, end_page_name: str, max_depth:int = None):
+        path_to = self.play_smart(start_page_name, "Philosophy").page_names
+        path_from = self.play_smart(end_page_name, "Philosophy").page_names[::-1]
+
+        path_from.pop(0)
+        path_to += path_from
+
+        logger.success("Path is:\n\t" + " -> ".join([f"'{p}'" for p in path_to]))
+
+        return path_to
+
+    def play_smart(self, start_page_name: str, end_page_name: str, max_depth: int = None) -> Optional[Path]:
         logger.info(
             "Started playing\n\t" +
             f"Start page: '{start_page_name}'\n\t" +
@@ -57,7 +68,7 @@ class WikiGameSmart(WikiGame):
                 next_page_name = link
 
                 if next_page_name == end_page_name:
-                    logger.success("Path found!")
+                    # logger.success("Path found!")
                     end_page = Page(next_page_name, cur_page.depth + 1, cur_page)
                     return end_page.path_to_root()
 

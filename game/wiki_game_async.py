@@ -45,8 +45,8 @@ class WikiGameAsync(WikiGame):
     async def get_async_links(self, links, cur_page):
         links = await self.wiki_parser.get_links(cur_page.page_name)
 
-    async def get_async_links(self, links, cur_page):
-        links = await self.wiki_parser.get_links(cur_page.page_name)
+    async def get_async_backlinks(self, links, cur_page):
+        links = await self.wiki_parser.get_backlinks(cur_page.page_name)
 
     def play_smart(self, start_page_name: str, end_page_name: str, max_depth: int = None) -> Optional[Path]:
         logger.info(
@@ -120,7 +120,8 @@ class WikiGameAsync(WikiGame):
             )
 
             t1 = time.time()
-            links = await self.wiki_parser.get_backlinks(cur_page.page_name)
+            links = []
+            asyncio.run(self.get_async_backlinks(links, cur_page))
             # print(time.time() - t1)
             logger.info(f"{time.time() - t1} second per wiki query")
 

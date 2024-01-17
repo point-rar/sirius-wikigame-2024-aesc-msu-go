@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="31bfab82-7354-420f-83d5-5e0fcdabf680" name="Changes" comment="Added changes">
+    <list default="true" id="31bfab82-7354-420f-83d5-5e0fcdabf680" name="Changes" comment="Added smarter way to get link">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game/wiki_game_smart.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/wiki_game_smart.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/page.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/page.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parser/wiki_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/parser/wiki_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,13 +31,13 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/vinik/PycharmProjects/test"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/vinik/PycharmProjects/test&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Python.main">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python">
       <module name="2024-winter-sirius-wikigame-template" />
@@ -55,7 +53,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
-      <option name="PARAMETERS" value="-s &quot;Beer&quot; -e &quot;Cat&quot;" />
+      <option name="PARAMETERS" value="-s &quot;Film&quot; -e &quot;Speed&quot; --gametype &quot;smart&quot;" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -149,13 +147,21 @@
       <option name="project" value="LOCAL" />
       <updated>1705433543712</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Added smarter way to get link">
+      <created>1705434672319</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1705434672319</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Fixed wikiparser (make it faster and add backlinks)" />
     <MESSAGE value="Build server and interacting with server" />
     <MESSAGE value="Added changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added changes" />
+    <MESSAGE value="Added smarter way to get link" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added smarter way to get link" />
   </component>
 </project>

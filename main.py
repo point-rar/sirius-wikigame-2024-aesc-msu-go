@@ -6,6 +6,7 @@ import sys
 from argparse import ArgumentParser
 from loguru import logger
 
+from game.wiki_game_dumb import WikiGameDumb
 from game.wiki_game_smart import WikiGameSmart
 from game.wiki_game_async import WikiGameAsync
 
@@ -18,7 +19,7 @@ if __name__ == '__main__':
     argumentParser.add_argument('-s', '--start', help='Start page name')
     argumentParser.add_argument('-e', '--end', help='End page name')
     argumentParser.add_argument('-dep', '--depth', help='Search depth', type=int)
-    argumentParser.add_argument('--gametype', choices=['dumb', 'async'], default='dumb')
+    argumentParser.add_argument('--gametype', choices=['dumb', 'async', 'smart'], default='dumb')
     argumentParser.add_argument('--debug', help='Enable debug info', action='store_true')
 
     args = argumentParser.parse_args()
@@ -29,6 +30,8 @@ if __name__ == '__main__':
 
     wiki_game = None
     if args.gametype == 'dumb':
+        wiki_game = WikiGameDumb()
+    elif args.gametype == 'smart':
         wiki_game = WikiGameSmart()
     elif args.gametype == 'async':
         wiki_game = WikiGameAsync()

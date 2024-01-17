@@ -56,7 +56,7 @@ class WikiParserSmarter(WikiParser):
     def __init__(self):
         self.session = requests.Session()
 
-    def __get_backlinks_from_page(self, page_name: str, count_backlinks=2000):
+    def __get_backlinks_from_page(self, page_name: str, count_backlinks=500):
         # See: https://en.wikipedia.org/w/api.php?action=help&modules=parse
         # https://en.wikipedia.org/w/api.php, https://ru.wikipedia.org/w/api.php
         params_query = {
@@ -80,7 +80,7 @@ class WikiParserSmarter(WikiParser):
         except:
             return []
 
-    def __get_links_from_page(self, page_name: str):
+    def __get_links_from_page(self, page_name: str, count=500):
         # See: https://en.wikipedia.org/w/api.php?action=help&modules=parse
         # https://en.wikipedia.org/w/api.php, https://ru.wikipedia.org/w/api.php
 
@@ -89,7 +89,7 @@ class WikiParserSmarter(WikiParser):
             'titles': page_name,
             'format': 'json',
             'prop': 'links',
-            'pllimit': 2000
+            'pllimit': count
         }
 
         req = self.session.get(url=self.URL, params=params_parse)

@@ -64,7 +64,8 @@ class WikiGameSmart(WikiGame):
 
             t1 = time.time()
             links = self.wiki_parser.get_links(cur_page.page_name)
-            print(time.time() - t1)
+            # print(time.time() - t1)
+            logger.info(f"{time.time() - t1} second per wiki query")
             costs = get_score(links, end_page_name)
             for i in range(len(links)):
                 # next_page_name = link.title
@@ -112,7 +113,9 @@ class WikiGameSmart(WikiGame):
 
             t1 = time.time()
             links = self.wiki_parser.get_backlinks(cur_page.page_name)
-            print(time.time() - t1)
+            # print(time.time() - t1)
+            logger.info(f"{time.time() - t1} second per wiki query")
+
             costs = get_score(links, end_page_name)
             for i in range(len(links)):
                 # next_page_name = link.title

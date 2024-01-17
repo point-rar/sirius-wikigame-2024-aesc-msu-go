@@ -56,7 +56,7 @@ class WikiParserSmarter(WikiParser):
     def __init__(self):
         self.session = requests.Session()
 
-    def __get_backlinks_from_page(self, page_name: str, count_backlinks=500):
+    def __get_backlinks_from_page(self, page_name: str, count_backlinks=2000):
         # See: https://en.wikipedia.org/w/api.php?action=help&modules=parse
         # https://en.wikipedia.org/w/api.php, https://ru.wikipedia.org/w/api.php
         params_query = {
@@ -75,7 +75,10 @@ class WikiParserSmarter(WikiParser):
         # print(data['query'].keys())
         # print(data['query']['backlinks'])
 
-        return data['query']['backlinks']
+        try:
+            return data['query']['backlinks']
+        except:
+            return []
 
     def __get_links_from_page(self, page_name: str):
         # See: https://en.wikipedia.org/w/api.php?action=help&modules=parse
@@ -129,7 +132,7 @@ class WikiParserSmarter(WikiParser):
             if ':' not in title:
                 links.add(title)
 
-        return [i for i in links]
+        return list(links)
 
 # wiki = WikiParserSmarter()
 

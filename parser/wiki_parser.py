@@ -107,7 +107,9 @@ class WikiParserSmarter(WikiParser):
 
         # print(data['query']['pages'])
         #
-        # print(list(i['links'] for i in data['query']['pages'].values()))
+
+        print(data['query'])
+        print(list(i['links'] for i in data['query']['pages'].values()))
 
         try:
             return [i['links'] for i in data['query']['pages'].values()][0]

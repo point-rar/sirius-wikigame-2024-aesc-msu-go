@@ -26,8 +26,7 @@ class WikiGameAsync(WikiGame):
         self.URL = 'https://en.wikipedia.org/w/api.php'
         self.wiki_parser = WikiParserSmarter()
         self.cost, self.used = dict(), set()
-        self.BUMSHAKATAKA = 20
-        self.limiter = AsyncLimiter(1, 1)
+        self.limiter = AsyncLimiter(10, 1)
         self.ioloop = asyncio.get_event_loop()
 
     def play(self, start: str, end: str):
@@ -41,10 +40,10 @@ class WikiGameAsync(WikiGame):
         )
 
         path_to = self.ioloop.run_until_complete(self.find_path(start, mid, False)).page_names
-        # path_from = self.ioloop.run_until_complete(self.find_path(end, mid, True)).page_names[::-1]
-        # path_from.pop(0)
+        path_from = self.ioloop.run_until_complete(self.find_path(end, mid, True)).page_names[::-1]
+        path_from.pop(0)
 
-        # path_to += path_from
+        path_to += path_from
 
         logger.success("Path is:\n\t" + " -> ".join([f"'{p}'" for p in path_to]))
 
@@ -70,20 +69,22 @@ class WikiGameAsync(WikiGame):
                 'pllimit': 'max'
             }
 
-        logger.info(
-            f"\n\tParsing '{cur_page.page_name}'\n\t"
-        )
-
         async with self.limiter:
             async with self.session.get(self.URL, params=params_query) as response:
 
                 data = await response.text()
                 data = json.loads(data)
+                logger.info(
+                    f"\n\tParsing '{cur_page.page_name}'\n\t"
+                )
 
-                if backlinks:
-                    data = data['query']['backlinks']
-                else:
-                    data = [i['links'] for i in data['query']['pages'].values()][0]
+                try:
+                    if backlinks:
+                        data = data['query']['backlinks']
+                    else:
+                        data = [i['links'] for i in data['query']['pages'].values()][0]
+                except:
+                    data = []
 
                 links = []
                 for raw_link in data:
@@ -109,36 +110,34 @@ class WikiGameAsync(WikiGame):
             )
         ]
 
-        while True:
-            done, pending = await asyncio.wait(
-                tasks,
-                return_when=asyncio.FIRST_COMPLETED
-            )
+        with self.limiter:
 
-            new_links = [task.result() for task in done]
+            while True:
+                done, pending = await asyncio.wait(
+                    tasks,
+                    return_when=asyncio.FIRST_COMPLETED
+                )
 
-            for list_links in new_links:
-                for cost, page in list_links:
-                    if end == page.page_name:
-                        return page.path_to_root()
-                    if page.page_name in self.used:
-                        continue
+                new_links = [task.result() for task in done]
 
-                    self.used.add(page.page_name)
-                    self.cost[page.page_name] = cost
-                    pr_q.put((-cost, page))
+                for list_links in new_links:
+                    for cost, page in list_links:
+                        if end == page.page_name:
+                            return page.path_to_root()
+                        if page.page_name in self.used:
+                            continue
 
-            new_tasks = []
+                        self.used.add(page.page_name)
+                        self.cost[page.page_name] = cost
+                        pr_q.put((-cost, page))
 
-            cnt = 0
+                new_tasks = []
 
-            while not pr_q.empty() and self.limiter.has_capacity() and cnt < self.BUMSHAKATAKA:
-                cost, cur_page = pr_q.get()
+                while not pr_q.empty() and self.limiter.has_capacity():
+                    cost, cur_page = pr_q.get()
 
-                new_tasks.append(asyncio.create_task(
-                    self.make_request(cur_page, backlinks, end)
-                ))
+                    new_tasks.append(asyncio.create_task(
+                        self.make_request(cur_page, backlinks, end)
+                    ))
 
-                cnt += 1
-
-            tasks = list(pending) + new_tasks
+                tasks = list(pending) + new_tasks

@@ -1,0 +1,6 @@
+loguru==0.7.2
+requests==2.31.0
+beautifulsoup4==4.12.2
+aiohttp==3.9.1
+gensim==4.3.2
+flask==3.0.0

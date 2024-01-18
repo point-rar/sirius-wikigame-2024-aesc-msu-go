@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="31bfab82-7354-420f-83d5-5e0fcdabf680" name="Changes" comment="add tests please">
-      <change afterPath="$PROJECT_DIR$/tests/wiki_game_test.py" afterDir="false" />
+    <list default="true" id="31bfab82-7354-420f-83d5-5e0fcdabf680" name="Changes" comment="add tests">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game/wiki_game_async.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/wiki_game_async.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/wiki_game_dumb_test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/wiki_game_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/wiki_game_test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +39,7 @@
     &quot;last_opened_file_path&quot;: &quot;C:/Users/vinik/PycharmProjects/test&quot;
   }
 }</component>
-  <component name="RunManager" selected="Python tests.Python tests in wiki_game_test.py">
+  <component name="RunManager" selected="Python.main">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python">
       <module name="2024-winter-sirius-wikigame-template" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -56,7 +55,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
-      <option name="PARAMETERS" value="-s &quot;Red_Hot_Chili_Peppers&quot; -e &quot;Server&quot; --gametype &quot;async&quot;" />
+      <option name="PARAMETERS" value="-s &quot;Dog&quot; -e &quot;Server&quot; --gametype &quot;async&quot;" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -265,7 +264,14 @@
       <option name="project" value="LOCAL" />
       <updated>1705588234412</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="add tests">
+      <created>1705589272619</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1705589272619</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -295,6 +301,7 @@
     <MESSAGE value="added working (not really) async" />
     <MESSAGE value="added working async" />
     <MESSAGE value="add tests please" />
-    <option name="LAST_COMMIT_MESSAGE" value="add tests please" />
+    <MESSAGE value="add tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="add tests" />
   </component>
 </project>

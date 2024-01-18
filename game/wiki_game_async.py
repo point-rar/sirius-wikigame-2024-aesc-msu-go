@@ -127,10 +127,13 @@ class WikiGameAsync(WikiGame):
         ]
 
         while True:
-            done, pending = await asyncio.wait(
-                tasks,
-                return_when=asyncio.FIRST_COMPLETED
-            )
+            try:
+                done, pending = await asyncio.wait(
+                    tasks,
+                    return_when=asyncio.FIRST_COMPLETED
+                )
+            except:
+                continue
 
             new_links = [task.result() for task in done]
 

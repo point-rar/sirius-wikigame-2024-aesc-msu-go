@@ -3,8 +3,6 @@ import unittest
 
 from loguru import logger
 
-
-
 class TestWiki(unittest.TestCase):
     def test_1(self):
         wiki = WikiGameAsync()

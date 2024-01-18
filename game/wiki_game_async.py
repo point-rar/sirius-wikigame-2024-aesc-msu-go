@@ -4,6 +4,8 @@ from typing import Optional
 import asyncio
 import aiohttp
 
+from heating.heating import heat
+
 from game.wiki_game import WikiGame
 from model.page import Page
 from model.path import Path
@@ -26,12 +28,15 @@ class WikiGameAsync(WikiGame):
         self.URL = 'https://en.wikipedia.org/w/api.php'
         self.wiki_parser = WikiParserSmarter()
         self.cost, self.used = dict(), set()
-        self.limiter = AsyncLimiter(20, 0.1)
+        self.limiter = AsyncLimiter(2, 0.05)
         self.ioloop = asyncio.get_event_loop()
 
     def play(self, start: str, end: str):
         mid = "Capitalism"
         self.session = aiohttp.ClientSession()
+
+        # logger.info("Heating")
+        # self.ioloop.run_until_complete(heat(self.URL, self.session))
 
         logger.info(
             "Started playing\n\t" +
@@ -72,7 +77,7 @@ class WikiGameAsync(WikiGame):
                 'pllimit': 'max'
             }
 
-        logger.info(
+        logger.debug(
             "Parsing \n\t" + cur_page.page_name
         )
 

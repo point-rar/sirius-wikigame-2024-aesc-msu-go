@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="31bfab82-7354-420f-83d5-5e0fcdabf680" name="Changes" comment="add tests again">
+    <list default="true" id="31bfab82-7354-420f-83d5-5e0fcdabf680" name="Changes" comment="add tests again v2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game/wiki_game_async.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/wiki_game_async.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/wiki_game_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/wiki_game_test.py" afterDir="false" />
@@ -39,7 +39,7 @@
     &quot;last_opened_file_path&quot;: &quot;C:/Users/vinik/PycharmProjects/test&quot;
   }
 }</component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="Python tests.Python tests in wiki_game_test.py">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python">
       <module name="2024-winter-sirius-wikigame-template" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -278,7 +278,14 @@
       <option name="project" value="LOCAL" />
       <updated>1705589552356</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="add tests again v2">
+      <created>1705589948181</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1705589948181</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -310,6 +317,18 @@
     <MESSAGE value="add tests please" />
     <MESSAGE value="add tests" />
     <MESSAGE value="add tests again" />
-    <option name="LAST_COMMIT_MESSAGE" value="add tests again" />
+    <MESSAGE value="add tests again v2" />
+    <option name="LAST_COMMIT_MESSAGE" value="add tests again v2" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/tests/wiki_game_test.py</url>
+          <line>19</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

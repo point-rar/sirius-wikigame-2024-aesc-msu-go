@@ -4,6 +4,8 @@ from typing import Optional
 import asyncio
 import aiohttp
 
+import warnings
+
 from heating.heating import heat
 
 from game.wiki_game import WikiGame
@@ -29,39 +31,47 @@ class WikiGameAsync(WikiGame):
         self.URL = 'https://en.wikipedia.org/w/api.php'
         self.wiki_parser = WikiParserSmarter()
         self.cost, self.used = dict(), set()
-        self.limiter = AsyncLimiter(10, 0.1)
+        self.limiter = AsyncLimiter(100, 1)
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         self.ioloop = asyncio.get_event_loop()
 
     def play(self, start: str, end: str, debug: bool = True):
-        self.debug = debug
-        mid = "Religion"
-        self.session = aiohttp.ClientSession()
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            self.debug = debug
+            mid = "Religion"
+            self.session = aiohttp.ClientSession()
 
-        # logger.info("Heating")
-        # self.ioloop.run_until_complete(heat(self.URL, self.session))
+            # logger.info("Heating")
+            # self.ioloop.run_until_complete(heat(self.URL, self.session))
 
-        if self.debug:
-            logger.debug(
-                "Started playing\n\t" +
-                f"Start page: '{start}'\n\t" +
-                f"End page: '{end}'\n\t"
-            )
+            if self.debug:
+                logger.debug(
+                    "Started playing\n\t" +
+                    f"Start page: '{start}'\n\t" +
+                    f"End page: '{end}'\n\t"
+                )
 
-        t1 = time.time()
-        path_to = self.ioloop.run_until_complete(self.find_path(start, mid, False)).page_names
-        path_from = self.ioloop.run_until_complete(self.find_path(end, mid, True)).page_names[::-1]
-        path_from.pop(0)
+            t1 = time.time()
+            path_to = self.ioloop.run_until_complete(self.find_path(start, mid, False)).page_names
+            path_from = self.ioloop.run_until_complete(self.find_path(end, mid, True)).page_names[::-1]
+            path_from.pop(0)
 
-        path_to += path_from
-        t2 = time.time()
+            path_to += path_from
+            t2 = time.time()
 
-        if self.debug:
-            logger.success("Path is:\n\t" + " -> ".join([f"'{p}'" for p in path_to]))
+            if self.debug:
+                logger.success("Path is:\n\t" + " -> ".join([f"'{p}'" for p in path_to]))
             logger.success(f"Time is {t2 -t1}")
 
-        self.ioloop.stop()
-        # return path_to
-        return t2 - t1
+            asyncio.run(self.session.close())
+            self.ioloop.stop()
+
+            self.used.clear()
+            self.cost.clear()
+            # return path_to
+            return t2 - t1
         # self.session.close()
 
     async def make_request(self, cur_page: Page, backlinks: bool, end_page_name: str):

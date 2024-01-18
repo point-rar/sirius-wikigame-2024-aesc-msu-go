@@ -20,6 +20,7 @@ class WikiGameAsync(WikiGame):
     def __init__(self):
         self.wiki_parser = WikiParserSmarter()
         self.cost = dict()
+        self.ioloop = asyncio.get_event_loop()
         self.used = dict()
 
     def get_cost(self, word, end_page):

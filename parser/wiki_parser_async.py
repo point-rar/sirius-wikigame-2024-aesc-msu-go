@@ -5,6 +5,7 @@ import requests
 
 from bs4 import BeautifulSoup
 from loguru import logger
+import aiohttp
 
 from model.link import Link
 
@@ -12,14 +13,11 @@ from model.link import Link
 class WikiParser(ABC):
     URL = 'https://en.wikipedia.org/w/api.php'
 
-    @abstractmethod
-    def get_links(self, page_name: str) -> set[str]:
-        pass
-
 
 class WikiParserSmarter(WikiParser):
+
     def __init__(self):
-        self.session = requests.Session()
+        pass
 
     async def __get_backlinks_from_page(self, page_name: str, count_backlinks=5000):
         # See: https://en.wikipedia.org/w/api.php?action=help&modules=parse
@@ -32,13 +30,12 @@ class WikiParserSmarter(WikiParser):
             'bllimit': count_backlinks
         }
 
-        req = await self.session.get(url=self.URL, params=params_query)
-        data = req.json()
+        self.session = aiohttp.ClientSession()
 
-        # print(data.keys())
-        #
-        # print(data['query'].keys())
-        # print(data['query']['backlinks'])
+        async with self.session.get(url=self.URL, params=params_query) as req:
+            data = await req.json()
+
+        await self.session.close()
 
         try:
             return data['query']['backlinks']
@@ -49,7 +46,7 @@ class WikiParserSmarter(WikiParser):
         # See: https://en.wikipedia.org/w/api.php?action=help&modules=parse
         # https://en.wikipedia.org/w/api.php, https://ru.wikipedia.org/w/api.php
 
-        params_parse = {
+        params_query = {
             'action': 'query',
             'titles': page_name,
             'format': 'json',
@@ -58,18 +55,12 @@ class WikiParserSmarter(WikiParser):
         }
 
         t1 = time.time()
-        req = await self.session.get(url=self.URL, params=params_parse)
-        print(time.time() - t1)
-        data = req.json()
+        self.session = aiohttp.ClientSession()
 
-        # print(data.keys())
-        #
-        # print(data['parse'].keys())
-        # print(data['parse']['links'])
+        async with self.session.get(url=self.URL, params=params_query) as req:
+            data = await req.json()
 
-        # print(data['query']['pages'])
-        #
-        # print(list(i['links'] for i in data['query']['pages'].values()))
+        await self.session.close()
 
         try:
             return [i['links'] for i in data['query']['pages'].values()][0]
@@ -105,6 +96,19 @@ class WikiParserSmarter(WikiParser):
                 links.add(title)
 
         return list(links)
+
+# async def main():
+#     wiki = WikiParserSmarter()
+#     # print(await wiki.get_backlinks("cat"))
+#     # await wiki.session.close()
+#
+#
+# import asyncio
+#
+# loop = asyncio.get_event_loop()
+# oop.run_until_complete(main())
+# loop.close()
+
 
 # wiki = WikiParserSmarter()
 

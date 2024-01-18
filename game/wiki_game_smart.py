@@ -30,7 +30,7 @@ class WikiGameSmart(WikiGame):
         return value
 
     def play(self, start_page_name: str, end_page_name: str, max_depth: int = None):
-        base = "Philosophy"
+        base = "Capitalism"
         path_to = self.play_smart(start_page_name, base).page_names
         path_from = self.play_smart_backlinks(end_page_name, base).page_names[::-1]
 

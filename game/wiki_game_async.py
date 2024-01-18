@@ -31,7 +31,7 @@ class WikiGameAsync(WikiGame):
         return value
 
     def play(self, start_page_name: str, end_page_name: str, max_depth: int = None):
-        base = "Philosophy"
+        base = "Science"
         path_to = self.play_smart(start_page_name, base).page_names
         path_from = self.play_smart_backlinks(end_page_name, base).page_names[::-1]
 
@@ -43,10 +43,10 @@ class WikiGameAsync(WikiGame):
         return path_to
 
     async def get_async_links(self, links, cur_page):
-        links = await self.wiki_parser.get_links(cur_page.page_name)
+        links[:] = await self.wiki_parser.get_links(cur_page.page_name)
 
     async def get_async_backlinks(self, links, cur_page):
-        links = await self.wiki_parser.get_backlinks(cur_page.page_name)
+        links[:] = await self.wiki_parser.get_backlinks(cur_page.page_name)
 
     def play_smart(self, start_page_name: str, end_page_name: str, max_depth: int = None) -> Optional[Path]:
         logger.info(
@@ -69,11 +69,8 @@ class WikiGameAsync(WikiGame):
                 f"Queue size: {q.qsize()}"
             )
 
-            t1 = time.time()
             links = []
             asyncio.run(self.get_async_links(links, cur_page))
-            # print(time.time() - t1)
-            logger.info(f"{time.time() - t1} second per wiki query")
             costs = get_score(links, end_page_name)
             for i in range(len(links)):
                 # next_page_name = link.title
@@ -119,11 +116,8 @@ class WikiGameAsync(WikiGame):
                 f"Queue size: {q.qsize()}"
             )
 
-            t1 = time.time()
             links = []
             asyncio.run(self.get_async_backlinks(links, cur_page))
-            # print(time.time() - t1)
-            logger.info(f"{time.time() - t1} second per wiki query")
 
             costs = get_score(links, end_page_name)
             for i in range(len(links)):

@@ -35,12 +35,12 @@ class WikiGameAsync(WikiGame):
         self.URL = 'https://ru.wikipedia.org/w/api.php'
         self.wiki_parser = WikiParserSmarter()
         self.cost, self.used = dict(), set()
-        self.limiter = AsyncLimiter(4, 0.05)
+        self.limiter = AsyncLimiter(10, 0.1)
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         self.ioloop = asyncio.get_event_loop()
 
-    def play(self, start: str, end: str, debug: bool = True, lang : str = "ru"):
+    def play(self, start: str, end: str, debug: bool = True, lang: str = "ru"):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             self.URL = 'https://' + lang + '.wikipedia.org/w/api.php'

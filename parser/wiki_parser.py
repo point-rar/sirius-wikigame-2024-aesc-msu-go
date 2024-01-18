@@ -1,10 +1,10 @@
 import time
 from abc import ABC, abstractmethod
-
 import requests
 
 from bs4 import BeautifulSoup
 from loguru import logger
+from heating.heating import heat
 
 from model.link import Link
 
@@ -20,6 +20,8 @@ class WikiParser(ABC):
 class WikiParserDumb(WikiParser):
     def __init__(self):
         self.session = requests.Session()
+        heat(self.URL, self.session)
+
 
     def __get_page(self, page_name: str) -> str:
         # See: https://en.wikipedia.org/w/api.php?action=help&modules=parse

@@ -31,7 +31,7 @@ class WikiGameAsync(WikiGame):
         self.URL = 'https://en.wikipedia.org/w/api.php'
         self.wiki_parser = WikiParserSmarter()
         self.cost, self.used = dict(), set()
-        self.limiter = AsyncLimiter(100, 1)
+        self.limiter = AsyncLimiter(100, 0.1)
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         self.ioloop = asyncio.get_event_loop()

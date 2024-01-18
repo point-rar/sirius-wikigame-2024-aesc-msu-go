@@ -19,7 +19,7 @@ class WikiParserSmarter(WikiParser):
     def __init__(self):
         pass
 
-    async def __get_backlinks_from_page(self, page_name: str, count_backlinks=5000):
+    async def __get_backlinks_from_page(self, session, page_name: str, count_backlinks=5000):
         # See: https://en.wikipedia.org/w/api.php?action=help&modules=parse
         # https://en.wikipedia.org/w/api.php, https://ru.wikipedia.org/w/api.php
         params_query = {
@@ -30,12 +30,12 @@ class WikiParserSmarter(WikiParser):
             'bllimit': count_backlinks
         }
 
-        self.session = aiohttp.ClientSession()
+        # self.session = aiohttp.ClientSession()
 
-        async with self.session.get(url=self.URL, params=params_query) as req:
+        async with session.get(url=self.URL, params=params_query) as req:
             data = await req.json()
 
-        await self.session.close()
+        # await self.session.close()
 
         try:
             return data['query']['backlinks']

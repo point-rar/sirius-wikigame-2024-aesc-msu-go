@@ -1,10 +1,12 @@
 import time
 from typing import Optional
 import asyncio
+import aiohttp
 
 from game.wiki_game import WikiGame
 from model.page import Page
 from model.path import Path
+from aiolimiter import AsyncLimiter
 
 from loguru import logger
 
@@ -14,132 +16,117 @@ import queue
 
 from server.send_request import get_score
 
+NUM_FROM_QUEUE_BY_STEP = 20
+
 
 # The simplest implementation with sequential page parsing using BFS
 class WikiGameAsync(WikiGame):
     def __init__(self):
         self.wiki_parser = WikiParserSmarter()
-        self.cost = dict()
+        self.cost, self.used = dict(), set()
+        self.limiter = AsyncLimiter(150, 1)
         self.ioloop = asyncio.get_event_loop()
-        self.used = dict()
 
-    def get_cost(self, word, end_page):
-        value = self.cost.get(word)
-        if value is None:
-            self.cost[word] = get_score([word], end_page)[0]
-            return self.cost[word]
+    def play(self, start : str, end : str):
+        mid = "Capitalism"
+        self.session = aiohttp.ClientSession()
 
-        return value
+        logger.info(
+            "Started playing\n\t" +
+            f"Start page: '{start}'\n\t" +
+            f"End page: '{end}'\n\t"
+        )
 
-    def play(self, start_page_name: str, end_page_name: str, max_depth: int = None):
-        base = "Science"
-        path_to = self.play_smart(start_page_name, base).page_names
-        path_from = self.play_smart_backlinks(end_page_name, base).page_names[::-1]
-
+        path_to = self.ioloop.run_until_complete(self.find_path(start, mid, False)).page_names
+        path_from = self.ioloop.run_until_complete(self.find_path(end, mid, True)).page_names[::-1]
         path_from.pop(0)
+
         path_to += path_from
 
         logger.success("Path is:\n\t" + " -> ".join([f"'{p}'" for p in path_to]))
 
+        self.ioloop.stop()
         return path_to
+        # self.session.close()
 
-    async def get_async_links(self, links, cur_page):
-        links[:] = await self.wiki_parser.get_links(cur_page.page_name)
-
-    async def get_async_backlinks(self, links, cur_page):
-        links[:] = await self.wiki_parser.get_backlinks(cur_page.page_name)
-
-    def play_smart(self, start_page_name: str, end_page_name: str, max_depth: int = None) -> Optional[Path]:
-        logger.info(
-            "Started playing\n\t" +
-            f"Start page: '{start_page_name}'\n\t" +
-            f"End page: '{end_page_name}'\n\t"
-        )
-
-        # Simple but not somple BFS
-        start_page = Page(start_page_name, 0)
-        # queued_page_names = set(start_page_name)
-        q = queue.PriorityQueue(maxsize=0)
-        q.put((-self.get_cost(start_page_name, end_page_name), start_page))
-
-        while q.qsize() != 0:
-            cost_page, cur_page = q.get()
-
-            logger.debug(
-                f"\n\tParsing '{cur_page.page_name}'\n\t" +
-                f"Queue size: {q.qsize()}"
-            )
-
-            links = []
-            asyncio.run(self.get_async_links(links, cur_page))
-            costs = get_score(links, end_page_name)
-            for i in range(len(links)):
-                # next_page_name = link.title
-                link = links[i]
-                next_page_name = link
-
-                if next_page_name == end_page_name:
-                    # logger.success("Path found!")
-                    end_page = Page(next_page_name, cur_page.depth + 1, cur_page)
-                    return end_page.path_to_root()
-
-                if self.used.get(next_page_name) is not None:
-                    continue
-
-                self.used[next_page_name] = True
-                self.cost[next_page_name] = costs[i]
-
-                next_page = Page(next_page_name, cur_page.depth + 1, cur_page)
-
-                q.put((-costs[i], next_page))
-
-        logger.error("Path not found, depth limit reached :(")
-        return None
-
-    def play_smart_backlinks(self, start_page_name: str, end_page_name: str, max_depth: int = None) -> Optional[Path]:
-        logger.info(
-            "Started playing\n\t" +
-            f"Start page: '{start_page_name}'\n\t" +
-            f"End page: '{end_page_name}'\n\t"
-        )
-
-        # Simple but not somple BFS
-        start_page = Page(start_page_name, 0)
-        # queued_page_names = set(start_page_name)
-        q = queue.PriorityQueue(maxsize=0)
-        q.put((-self.get_cost(start_page_name, end_page_name), start_page))
-
-        while q.qsize() != 0:
-            cost_page, cur_page = q.get()
-
-            logger.debug(
-                f"\n\tParsing '{cur_page.page_name}'\n\t" +
-                f"Queue size: {q.qsize()}"
-            )
+    async def make_request(self, cur_page : Page, backlinks : bool, end_page_name : str):
+        if backlinks:
+            params_query = {
+                'action': 'query',
+                'bltitle': cur_page.name,
+                'format': 'json',
+                'list': 'backlinks',
+                'bllimit': 'max'
+            }
+        else:
+            params_query = {
+                'action': 'query',
+                'titles': cur_page.name,
+                'format': 'json',
+                'prop': 'links',
+                'pllimit': 'max'
+            }
+        
+        async with self.limiter:
+            data = await self.session.get(self.URL, params=params_query).json()
+            if backlinks:
+                data = data['query']['backlinks']
+            else:
+                data = [i['links'] for i in data['query']['pages'].values()][0]
 
             links = []
-            asyncio.run(self.get_async_backlinks(links, cur_page))
+            for raw_link in data:
+                title = raw_link['title']
+                if ':' not in title:
+                    links.append(raw_link)
 
-            costs = get_score(links, end_page_name)
-            for i in range(len(links)):
-                # next_page_name = link.title
-                link = links[i]
-                next_page_name = link
+            scores = get_score(links, end_page_name)
+            ans = [(scores[i], Page(links[i], cur_page.depth + 1, cur_page)) for i in range(len(links))]
 
-                if next_page_name == end_page_name:
-                    # logger.success("Path found!")
-                    end_page = Page(next_page_name, cur_page.depth + 1, cur_page)
-                    return end_page.path_to_root()
+            return ans
 
-                if self.used.get(next_page_name) is not None:
+
+    async def find_path(self, start : str, end : str, backlinks : bool):
+        start_page = Page(start, 0)
+    
+        self.used.add(start)
+
+        pr_q = queue.PriorityQueue(maxsize=0)
+
+        tasks = [
+            asyncio.create_task(
+                self.make_request(start_page, backlinks)
+            )
+        ]
+
+        while True:
+            done, pending = await asyncio.wait(
+                tasks,
+                return_when=asyncio.FIRST_COMPLETED
+            )
+
+            new_links = [task.result() for task in done]
+
+            for cost, page in new_links:
+                if end == page.page_name:
+                    return page.path_to_root()
+                if page.page_name in self.used:
                     continue
+                
+                self.used.add(page.page_name)
+                self.cost[page.page_name] = cost
+                pr_q.put(-cost, page)
 
-                self.used[next_page_name] = True
-                self.cost[next_page_name] = costs[i]
+            new_tasks = []
+            while not pr_q.empty() and self.limiter.has_capacity():
+                cost, cur_page = pr_q.get()
 
-                next_page = Page(next_page_name, cur_page.depth + 1, cur_page)
+                new_tasks.append(asyncio.create_task(
+                    self.make_request(cur_page, backlinks, end)
+                ))
+            
+            tasks = list(pending) + new_tasks
 
-                q.put((-costs[i], next_page))
 
-        logger.error("Path not found, depth limit reached :(")
-        return None
+            
+

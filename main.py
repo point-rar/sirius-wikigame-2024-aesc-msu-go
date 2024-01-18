@@ -37,6 +37,6 @@ if __name__ == '__main__':
         logger.error("Incorrect game_old type.")
         exit(-1)
 
-    path = wiki_game.play(args.start, args.end)
+    path = wiki_game.play(args.start, args.end, debug=True)
 
     print(path)

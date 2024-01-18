@@ -18,7 +18,7 @@ class TestWiki(unittest.TestCase):
 
     def test_5(self):
         wiki = WikiGameAsync()
-        time = float(wiki.play("Red_Hot_Chili_Peppers", "Server", False))
+        time = float(wiki.play("Red_Hot_Chili_Peppers", "New_York_Giants_(baseball)", False))
         assert time < 60
 
     def test_7(self):

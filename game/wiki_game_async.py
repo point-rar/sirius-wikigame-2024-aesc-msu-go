@@ -6,6 +6,10 @@ import aiohttp
 
 import warnings
 
+import joblib
+
+from joblib import Parallel, delayed
+
 from heating.heating import heat
 
 from game.wiki_game import WikiGame
@@ -28,10 +32,10 @@ NUM_FROM_QUEUE_BY_STEP = 20
 class WikiGameAsync(WikiGame):
     def __init__(self):
         self.debug = True
-        self.URL = 'https://en.wikipedia.org/w/api.php'
+        self.URL = 'https://ru.wikipedia.org/w/api.php'
         self.wiki_parser = WikiParserSmarter()
         self.cost, self.used = dict(), set()
-        self.limiter = AsyncLimiter(100, 0.1)
+        self.limiter = AsyncLimiter(4, 0.05)
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         self.ioloop = asyncio.get_event_loop()
@@ -40,7 +44,7 @@ class WikiGameAsync(WikiGame):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             self.debug = debug
-            mid = "Religion"
+            mid = "Капитализм"
             self.session = aiohttp.ClientSession()
 
             # logger.info("Heating")
@@ -54,6 +58,7 @@ class WikiGameAsync(WikiGame):
                 )
 
             t1 = time.time()
+
             path_to = self.ioloop.run_until_complete(self.find_path(start, mid, False)).page_names
             path_from = self.ioloop.run_until_complete(self.find_path(end, mid, True)).page_names[::-1]
             path_from.pop(0)

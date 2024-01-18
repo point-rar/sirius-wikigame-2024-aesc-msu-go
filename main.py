@@ -1,6 +1,3 @@
-#!/bin/python3.11
-
-
 import sys
 
 from argparse import ArgumentParser

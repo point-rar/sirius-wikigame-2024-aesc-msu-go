@@ -25,24 +25,27 @@ NUM_FROM_QUEUE_BY_STEP = 20
 # The simplest implementation with sequential page parsing using BFS
 class WikiGameAsync(WikiGame):
     def __init__(self):
+        self.debug = True
         self.URL = 'https://en.wikipedia.org/w/api.php'
         self.wiki_parser = WikiParserSmarter()
         self.cost, self.used = dict(), set()
-        self.limiter = AsyncLimiter(2, 0.05)
+        self.limiter = AsyncLimiter(10, 0.1)
         self.ioloop = asyncio.get_event_loop()
 
-    def play(self, start: str, end: str):
-        mid = "Capitalism"
+    def play(self, start: str, end: str, debug: bool = True):
+        self.debug = debug
+        mid = "Earth"
         self.session = aiohttp.ClientSession()
 
         # logger.info("Heating")
         # self.ioloop.run_until_complete(heat(self.URL, self.session))
 
-        logger.info(
-            "Started playing\n\t" +
-            f"Start page: '{start}'\n\t" +
-            f"End page: '{end}'\n\t"
-        )
+        if self.debug:
+            logger.debug(
+                "Started playing\n\t" +
+                f"Start page: '{start}'\n\t" +
+                f"End page: '{end}'\n\t"
+            )
 
         t1 = time.time()
         path_to = self.ioloop.run_until_complete(self.find_path(start, mid, False)).page_names
@@ -52,11 +55,13 @@ class WikiGameAsync(WikiGame):
         path_to += path_from
         t2 = time.time()
 
-        logger.success("Path is:\n\t" + " -> ".join([f"'{p}'" for p in path_to]))
-        logger.success(f"Time is {t2 -t1}")
+        if self.debug:
+            logger.success("Path is:\n\t" + " -> ".join([f"'{p}'" for p in path_to]))
+            logger.success(f"Time is {t2 -t1}")
 
         self.ioloop.stop()
-        return path_to
+        # return path_to
+        return t2 - t1
         # self.session.close()
 
     async def make_request(self, cur_page: Page, backlinks: bool, end_page_name: str):
@@ -77,9 +82,11 @@ class WikiGameAsync(WikiGame):
                 'pllimit': 'max'
             }
 
-        logger.debug(
-            "Parsing \n\t" + cur_page.page_name
-        )
+
+        if self.debug:
+            logger.debug(
+                "Parsing \n\t" + cur_page.page_name
+            )
 
         async with self.limiter:
             async with self.session.get(self.URL, params=params_query) as response:

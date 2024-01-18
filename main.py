@@ -13,9 +13,9 @@ if __name__ == '__main__':
         description='Let\'s play WikiGame!'
     )
 
+    argumentParser.add_argument('-lang', '--language', choices=['ru', 'en'], default='ru', help='select language')
     argumentParser.add_argument('-s', '--start', help='Start page name')
     argumentParser.add_argument('-e', '--end', help='End page name')
-    argumentParser.add_argument('-dep', '--depth', help='Search depth', type=int)
     argumentParser.add_argument('--gametype', choices=['dumb', 'async', 'smart'], default='dumb')
     argumentParser.add_argument('--debug', help='Enable debug info', action='store_true')
 
@@ -37,6 +37,6 @@ if __name__ == '__main__':
         logger.error("Incorrect game_old type.")
         exit(-1)
 
-    path = wiki_game.play(args.start, args.end, debug=True)
+    path = wiki_game.play(args.start, args.end, debug=True, lang=args.language)
 
     print(path)

@@ -40,11 +40,16 @@ class WikiGameAsync(WikiGame):
         asyncio.set_event_loop(loop)
         self.ioloop = asyncio.get_event_loop()
 
-    def play(self, start: str, end: str, debug: bool = True):
+    def play(self, start: str, end: str, debug: bool = True, lang : str = "ru"):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
+            self.URL = 'https://' + lang + '.wikipedia.org/w/api.php'
             self.debug = debug
-            mid = "Капитализм"
+            mid = ''
+            if lang == 'ru':
+                mid = "Земля"
+            else:
+                mid = "Capitalism"
             self.session = aiohttp.ClientSession()
 
             # logger.info("Heating")

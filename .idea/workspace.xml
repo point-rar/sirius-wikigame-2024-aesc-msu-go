@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="31bfab82-7354-420f-83d5-5e0fcdabf680" name="Changes" comment="added some async (not worked yet)">
+    <list default="true" id="31bfab82-7354-420f-83d5-5e0fcdabf680" name="Changes" comment="added async wiki parser but it doesnt speed up at all">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game/wiki_game_async.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/wiki_game_async.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game/wiki_game_smart.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/wiki_game_smart.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parser/wiki_parser_async.py" beforeDir="false" afterPath="$PROJECT_DIR$/parser/wiki_parser_async.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parser/wiki_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/parser/wiki_parser.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +54,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
-      <option name="PARAMETERS" value="-s &quot;Server&quot; -e &quot;Dog&quot; --gametype &quot;smart&quot;" />
+      <option name="PARAMETERS" value="-s &quot;Dog&quot; -e &quot;Red_Hot_Chili_Peppers&quot; --gametype &quot;smart&quot;" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -208,7 +206,14 @@
       <option name="project" value="LOCAL" />
       <updated>1705528249612</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="added async wiki parser but it doesnt speed up at all">
+      <created>1705562309104</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1705562309104</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -232,6 +237,7 @@
     <MESSAGE value="Optimizer api (real version)" />
     <MESSAGE value="updated parser" />
     <MESSAGE value="added some async (not worked yet)" />
-    <option name="LAST_COMMIT_MESSAGE" value="added some async (not worked yet)" />
+    <MESSAGE value="added async wiki parser but it doesnt speed up at all" />
+    <option name="LAST_COMMIT_MESSAGE" value="added async wiki parser but it doesnt speed up at all" />
   </component>
 </project>

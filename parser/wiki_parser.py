@@ -111,7 +111,7 @@ class WikiParserSmarter(WikiParser):
 
         try:
             return [i['links'] for i in data['query']['pages'].values()][0]
-        except:
+        except Exception:
             return []
 
     def get_links(self, page_name: str) -> list[str]:

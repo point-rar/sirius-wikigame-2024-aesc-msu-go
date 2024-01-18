@@ -26,7 +26,7 @@ class WikiGameAsync(WikiGame):
         self.URL = 'https://en.wikipedia.org/w/api.php'
         self.wiki_parser = WikiParserSmarter()
         self.cost, self.used = dict(), set()
-        self.limiter = AsyncLimiter(10, 1)
+        self.limiter = AsyncLimiter(20, 0.1)
         self.ioloop = asyncio.get_event_loop()
 
     def play(self, start: str, end: str):
@@ -39,13 +39,16 @@ class WikiGameAsync(WikiGame):
             f"End page: '{end}'\n\t"
         )
 
+        t1 = time.time()
         path_to = self.ioloop.run_until_complete(self.find_path(start, mid, False)).page_names
         path_from = self.ioloop.run_until_complete(self.find_path(end, mid, True)).page_names[::-1]
         path_from.pop(0)
 
         path_to += path_from
+        t2 = time.time()
 
         logger.success("Path is:\n\t" + " -> ".join([f"'{p}'" for p in path_to]))
+        logger.success(f"Time is {t2 -t1}")
 
         self.ioloop.stop()
         return path_to
@@ -69,14 +72,15 @@ class WikiGameAsync(WikiGame):
                 'pllimit': 'max'
             }
 
+        logger.info(
+            "Parsing \n\t" + cur_page.page_name
+        )
+
         async with self.limiter:
             async with self.session.get(self.URL, params=params_query) as response:
 
                 data = await response.text()
                 data = json.loads(data)
-                logger.info(
-                    f"\n\tParsing '{cur_page.page_name}'\n\t"
-                )
 
                 try:
                     if backlinks:
@@ -110,34 +114,35 @@ class WikiGameAsync(WikiGame):
             )
         ]
 
-        with self.limiter:
+        while True:
+            done, pending = await asyncio.wait(
+                tasks,
+                return_when=asyncio.FIRST_COMPLETED
+            )
 
-            while True:
-                done, pending = await asyncio.wait(
-                    tasks,
-                    return_when=asyncio.FIRST_COMPLETED
-                )
+            new_links = [task.result() for task in done]
 
-                new_links = [task.result() for task in done]
+            for list_links in new_links:
+                for cost, page in list_links:
+                    if end == page.page_name:
+                        return page.path_to_root()
+                    if page.page_name in self.used:
+                        continue
 
-                for list_links in new_links:
-                    for cost, page in list_links:
-                        if end == page.page_name:
-                            return page.path_to_root()
-                        if page.page_name in self.used:
-                            continue
+                    self.used.add(page.page_name)
+                    self.cost[page.page_name] = cost
+                    pr_q.put((-cost, page))
 
-                        self.used.add(page.page_name)
-                        self.cost[page.page_name] = cost
-                        pr_q.put((-cost, page))
+            new_tasks = []
 
-                new_tasks = []
+            # await self.limiter.acquire()  # blocks until there is capacity
 
-                while not pr_q.empty() and self.limiter.has_capacity():
-                    cost, cur_page = pr_q.get()
+            while not pr_q.empty() and self.limiter.has_capacity():
+                cost, cur_page = pr_q.get()
 
+                async with self.limiter:
                     new_tasks.append(asyncio.create_task(
                         self.make_request(cur_page, backlinks, end)
                     ))
 
-                tasks = list(pending) + new_tasks
+            tasks = list(pending) + new_tasks

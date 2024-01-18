@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="31bfab82-7354-420f-83d5-5e0fcdabf680" name="Changes" comment="pizdec">
+    <list default="true" id="31bfab82-7354-420f-83d5-5e0fcdabf680" name="Changes" comment="added working (not really) async">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game/wiki_game_async.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/wiki_game_async.py" afterDir="false" />
     </list>
@@ -227,7 +227,14 @@
       <option name="project" value="LOCAL" />
       <updated>1705585470477</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="added working (not really) async">
+      <created>1705587257547</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1705587257547</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -254,6 +261,7 @@
     <MESSAGE value="added async wiki parser but it doesnt speed up at all" />
     <MESSAGE value="added requirements.txt" />
     <MESSAGE value="pizdec" />
-    <option name="LAST_COMMIT_MESSAGE" value="pizdec" />
+    <MESSAGE value="added working (not really) async" />
+    <option name="LAST_COMMIT_MESSAGE" value="added working (not really) async" />
   </component>
 </project>

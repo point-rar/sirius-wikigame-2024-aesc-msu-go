@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="31bfab82-7354-420f-83d5-5e0fcdabf680" name="Changes" comment="add tests">
+    <list default="true" id="31bfab82-7354-420f-83d5-5e0fcdabf680" name="Changes" comment="add tests again">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game/wiki_game_async.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/wiki_game_async.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/wiki_game_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/wiki_game_test.py" afterDir="false" />
@@ -55,7 +55,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
-      <option name="PARAMETERS" value="-s &quot;Dog&quot; -e &quot;Server&quot; --gametype &quot;async&quot;" />
+      <option name="PARAMETERS" value="-s &quot;Dog&quot; -e &quot;1984&quot; --gametype &quot;async&quot;" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -271,7 +271,14 @@
       <option name="project" value="LOCAL" />
       <updated>1705589272619</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="add tests again">
+      <created>1705589552356</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1705589552356</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -302,6 +309,7 @@
     <MESSAGE value="added working async" />
     <MESSAGE value="add tests please" />
     <MESSAGE value="add tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="add tests" />
+    <MESSAGE value="add tests again" />
+    <option name="LAST_COMMIT_MESSAGE" value="add tests again" />
   </component>
 </project>

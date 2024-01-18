@@ -34,7 +34,7 @@ class WikiGameAsync(WikiGame):
 
     def play(self, start: str, end: str, debug: bool = True):
         self.debug = debug
-        mid = "Earth"
+        mid = "Religion"
         self.session = aiohttp.ClientSession()
 
         # logger.info("Heating")

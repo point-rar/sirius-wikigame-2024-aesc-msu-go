@@ -6,6 +6,7 @@ from loguru import logger
 from game.wiki_game_dumb import WikiGameDumb
 from game.wiki_game_smart import WikiGameSmart
 from game.wiki_game_async import WikiGameAsync
+from game.wiki_game_async_layers import WikiGameAsyncWithLayers
 
 if __name__ == '__main__':
     argumentParser = ArgumentParser(
@@ -16,7 +17,8 @@ if __name__ == '__main__':
     argumentParser.add_argument('-lang', '--language', choices=['ru', 'en'], default='ru', help='select language')
     argumentParser.add_argument('-s', '--start', help='Start page name')
     argumentParser.add_argument('-e', '--end', help='End page name')
-    argumentParser.add_argument('--gametype', choices=['dumb', 'async', 'smart'], default='dumb')
+    argumentParser.add_argument('-dep', '--depth', help='Search depth', type=int)
+    argumentParser.add_argument('--gametype', choices=['dumb', 'async', 'smart', 'layers'], default='dumb')
     argumentParser.add_argument('--debug', help='Enable debug info', action='store_true')
 
     args = argumentParser.parse_args()
@@ -32,6 +34,8 @@ if __name__ == '__main__':
         wiki_game = WikiGameSmart()
     elif args.gametype == 'async':
         wiki_game = WikiGameAsync()
+    elif args.gametype == 'layers':
+        wiki_game = WikiGameAsyncWithLayers()
 
     if wiki_game is None:
         logger.error("Incorrect game_old type.")

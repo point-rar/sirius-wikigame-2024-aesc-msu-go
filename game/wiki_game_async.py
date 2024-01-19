@@ -52,8 +52,8 @@ class WikiGameAsync(WikiGame):
                 mid = "Capitalism"
             self.session = aiohttp.ClientSession()
 
-            # logger.info("Heating")
-            # self.ioloop.run_until_complete(heat(self.URL, self.session))
+            logger.info("Heating")
+            self.ioloop.run_until_complete(heat(self.URL, self.session))
 
             if self.debug:
                 logger.debug(

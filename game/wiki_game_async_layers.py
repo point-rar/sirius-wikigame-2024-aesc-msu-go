@@ -21,7 +21,7 @@ import queue
 
 from server.send_request import get_score
 
-LAYER_SIZE = 25
+LAYER_SIZE = 20
 
 
 # The simplest implementation with sequential page parsing using BFS
@@ -43,10 +43,11 @@ class WikiGameAsyncWithLayers(WikiGame):
             mid = "Earth"
             self.session = aiohttp.ClientSession()
 
-            logger.info("Heating")
+            if self.debug:
+                logger.info("Heating")
+
             self.ioloop.run_until_complete(heat(self.URL, self.session))
 
-            print(self.debug)
 
             if self.debug:
                 logger.info(

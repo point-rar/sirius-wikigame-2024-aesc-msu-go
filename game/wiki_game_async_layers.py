@@ -21,7 +21,7 @@ import queue
 
 from server.send_request import get_score
 
-LAYER_SIZE = 20
+LAYER_SIZE = 25
 
 
 # The simplest implementation with sequential page parsing using BFS
@@ -30,17 +30,24 @@ class WikiGameAsyncWithLayers(WikiGame):
         self.debug = True
         self.URL = 'https://en.wikipedia.org/w/api.php'
         self.wiki_parser = WikiParserSmarter()
-        self.cost, self.used = dict(), set()
+        self.used = set()
         self.limiter = AsyncLimiter(100000, 0.1)
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         self.ioloop = asyncio.get_event_loop()
 
-    def play(self, start: str, end: str, debug: bool = True):
+    def play(self, start: str, end: str, debug: bool = True, lang : str = "ru"):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
+
+            self.URL = 'https://' + lang + '.wikipedia.org/w/api.php'
             self.debug = debug
-            mid = "Earth"
+
+            if lang == "ru":
+                mid = "Земля"
+            else:
+                mid = "Earth"
+
             self.session = aiohttp.ClientSession()
 
             if self.debug:
@@ -57,11 +64,13 @@ class WikiGameAsyncWithLayers(WikiGame):
                 )
 
             t1 = time.time()
-            path_to = self.ioloop.run_until_complete(self.find_path(start, mid, False)).page_names
-            path_from = self.ioloop.run_until_complete(self.find_path(end, mid, True)).page_names[::-1]
-            path_from.pop(0)
+            #path_to = self.ioloop.run_until_complete(self.find_path(start, mid, False)).page_names
+            #self.used.clear()
+            #path_from = self.ioloop.run_until_complete(self.find_path(end, mid, True)).page_names[::-1]
+            #path_from.pop(0)
 
-            path_to += path_from
+            #path_to += path_from
+            path_to = self.ioloop.run_until_complete(self.find_path_to_from(start, mid, end))
             t2 = time.time()
 
             if self.debug:
@@ -72,7 +81,7 @@ class WikiGameAsyncWithLayers(WikiGame):
             self.ioloop.stop()
 
             self.used.clear()
-            self.cost.clear()
+            # self.cost.clear()
             # return path_to
             return t2 - t1
         # self.session.close()
@@ -163,7 +172,7 @@ class WikiGameAsyncWithLayers(WikiGame):
                     continue
 
                 self.used.add(page.page_name)
-                self.cost[page.page_name] = cost
+                # self.cost[page.page_name] = cost
                 to_add.append((cost, page))
 
             new_tasks = []
@@ -176,3 +185,112 @@ class WikiGameAsyncWithLayers(WikiGame):
                     ))
 
             tasks = new_tasks
+
+    async def find_path_to_from(self, start: str, mid : str, end: str):
+        start_page = Page(start, 0)
+        end_page = Page(end, 0)
+
+        self.used.add(start)
+
+        cur_layer = []
+        next_layer = []
+
+        tasks_to = [
+            asyncio.create_task(
+                self.make_request(start_page, True, mid)
+            )
+        ]
+        tasks_from = [
+            asyncio.create_task(
+                self.make_request(end_page, False, mid)
+            )
+        ]
+
+        is_path_to = False
+        is_path_from = False
+        path_to = -1
+        path_from = -1
+
+        while not is_path_to or not is_path_from:
+            try:
+                done_to, pending = await asyncio.wait(
+                    tasks_to,
+                    return_when=asyncio.ALL_COMPLETED
+                )
+                done_from, pending = await asyncio.wait(
+                    tasks_from,
+                    return_when=asyncio.ALL_COMPLETED
+                )
+            except:
+                continue
+            
+            if not is_path_to:
+                new_links_to = []
+                for task in done_to:
+                    new_links_to += task.result()
+
+                new_links_to = sorted(new_links_to)[::-1][:LAYER_SIZE]
+                to_add = []
+
+                for cost, page in new_links_to:
+                    if is_path_to == True:
+                        continue
+                    if mid == page.page_name:
+                        path_to = page.path_to_root()
+                        is_path_to = True
+                    if page.page_name in self.used_to:
+                        continue
+
+                    self.used_to.add(page.page_name)
+                    # self.cost[page.page_name] = cost
+                    to_add.append((cost, page))
+
+                new_tasks_to = []
+
+                for cost, page in to_add:
+
+                    async with self.limiter:
+                        new_tasks_to.append(asyncio.create_task(
+                            self.make_request(page, False, end)
+                        ))
+
+                tasks_to = new_tasks_to
+            else:
+                tasks_to = []
+
+            if not is_path_from:
+                new_links_from = []
+                for task in done_from:
+                    new_links_from += task.result()
+
+                new_links_from = sorted(new_links_from)[::-1][:LAYER_SIZE]
+                to_add = []
+
+                for cost, page in new_links_from:
+                    if is_path_from == True:
+                        continue
+                    if mid == page.page_name:
+                        path_from = page.path_to_root()
+                        is_path_from = True
+                    if page.page_name in self.used_from:
+                        continue
+
+                    self.used_from.add(page.page_name)
+                    # self.cost[page.page_name] = cost
+                    to_add.append((cost, page))
+
+                new_tasks_from = []
+
+                for cost, page in to_add:
+
+                    async with self.limiter:
+                        new_tasks_from.append(asyncio.create_task(
+                            self.make_request(page, True, end)
+                        ))
+
+                tasks_from = new_tasks_from
+            else:
+                tasks_from = []
+        path_from = path_from[:len(path_from) - 1:-1]
+        path_to += path_from
+        return path_to

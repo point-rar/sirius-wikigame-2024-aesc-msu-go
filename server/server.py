@@ -38,7 +38,7 @@ if lang == "en":
     app.run(host='127.0.0.1', port=port)
 
 elif lang == "ru":
-    path = 'files/hudlit_12B_500K_300d_100q.tar'  # 51MB
+    path = 'hudlit_12B_500K_300d_100q.tar'  # 51MB
 
     model = Navec.load(path)
 

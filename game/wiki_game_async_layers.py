@@ -8,6 +8,8 @@ import warnings
 
 from heating.heating import heat
 
+import threading
+
 from game.wiki_game import WikiGame
 from model.page import Page
 from model.path import Path
@@ -21,8 +23,7 @@ import queue
 
 from server.send_request import get_score
 
-LAYER_SIZE = 20
-
+LAYER_SIZE = 25
 
 # The simplest implementation with sequential page parsing using BFS
 class WikiGameAsyncWithLayers(WikiGame):
@@ -30,24 +31,47 @@ class WikiGameAsyncWithLayers(WikiGame):
         self.debug = True
         self.URL = 'https://en.wikipedia.org/w/api.php'
         self.wiki_parser = WikiParserSmarter()
-        self.cost, self.used = dict(), set()
-        self.limiter = AsyncLimiter(100000, 0.1)
+        self.cost = dict()
+        self.limiter = AsyncLimiter(100000, 0.001)
+        self.path_to = []
+        self.path_from = []
+
+    def run_path_to(self, *args):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        self.ioloop = asyncio.get_event_loop()
+        loop = asyncio.get_event_loop()
+        self.path_to = loop.run_until_complete(self.find_path(args[0], args[1], args[2])).page_names
+        loop.close()
+        return "ty pidor"
+    
+    def run_path_from(self, *args):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop = asyncio.get_event_loop()
+        self.path_from = loop.run_until_complete(self.find_path(args[0], args[1], args[2])).page_names[::-1]
+        loop.close()
+        return "ty tozhe pidor"
 
-    def play(self, start: str, end: str, debug: bool = True):
+    def play(self, start: str, end: str, debug: bool = True, lang: str = "ru"):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
+            self.URL = 'https://' + lang + '.wikipedia.org/w/api.php'
             self.debug = debug
-            mid = "Earth"
-            self.session = aiohttp.ClientSession()
+            mid = ''
+            if lang == 'ru':
+                mid = "Земля"
+            else:
+                mid = "Capitalism"
+            # self.session = aiohttp.ClientSession()
 
             if self.debug:
                 logger.info("Heating")
 
-            self.ioloop.run_until_complete(heat(self.URL, self.session))
-
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            # self.ioloop = asyncio.get_event_loop()
+            # self.ioloop.run_until_complete(heat(self.URL, self.session))
+            # asyncio.run(self.session.close())
 
             if self.debug:
                 logger.info(
@@ -57,27 +81,35 @@ class WikiGameAsyncWithLayers(WikiGame):
                 )
 
             t1 = time.time()
-            path_to = self.ioloop.run_until_complete(self.find_path(start, mid, False)).page_names
-            path_from = self.ioloop.run_until_complete(self.find_path(end, mid, True)).page_names[::-1]
-            path_from.pop(0)
 
-            path_to += path_from
+            thread1 = threading.Thread(target=self.run_path_to, args=(start, mid, False))
+            thread2 = threading.Thread(target=self.run_path_from, args=(end, mid, True))
+
+            thread1.start()
+            thread2.start()
+
+            thread1.join()
+            thread2.join()
+            print(self.path_to)
+            print('kek')
+            self.path_from.pop(0)
+
+            self.path_to += self.path_from
             t2 = time.time()
 
             if self.debug:
-                logger.success("Path is:\n\t" + " -> ".join([f"'{p}'" for p in path_to]))
+                logger.success("Path is:\n\t" + " -> ".join([f"'{p}'" for p in self.path_to]))
             logger.success(f"Time is {t2 -t1}")
 
-            asyncio.run(self.session.close())
-            self.ioloop.stop()
+            # asyncio.run(self.session.close())
+            # self.ioloop.stop()
 
-            self.used.clear()
             self.cost.clear()
             # return path_to
             return t2 - t1
         # self.session.close()
 
-    async def make_request(self, cur_page: Page, backlinks: bool, end_page_name: str):
+    async def make_request(self, cur_page: Page, backlinks: bool, end_page_name: str, session):
         if backlinks:
             params_query = {
                 'action': 'query',
@@ -102,7 +134,7 @@ class WikiGameAsyncWithLayers(WikiGame):
             )
 
         async with self.limiter:
-            async with self.session.get(self.URL, params=params_query) as response:
+            async with session.get(self.URL, params=params_query) as response:
 
                 data = await response.text()
                 data = json.loads(data)
@@ -129,14 +161,18 @@ class WikiGameAsyncWithLayers(WikiGame):
     async def find_path(self, start: str, end: str, backlinks: bool):
         start_page = Page(start, 0)
 
-        self.used.add(start)
+        used = set()
+
+        used.add(start)
 
         cur_layer = []
         next_layer = []
 
+        session = aiohttp.ClientSession()
+
         tasks = [
             asyncio.create_task(
-                self.make_request(start_page, backlinks, end)
+                self.make_request(start_page, backlinks, end, session)
             )
         ]
 
@@ -158,11 +194,13 @@ class WikiGameAsyncWithLayers(WikiGame):
 
             for cost, page in new_links:
                 if end == page.page_name:
+                    await session.close()
+                    print(page.path_to_root().page_names)
                     return page.path_to_root()
-                if page.page_name in self.used:
+                if page.page_name in used:
                     continue
 
-                self.used.add(page.page_name)
+                used.add(page.page_name)
                 self.cost[page.page_name] = cost
                 to_add.append((cost, page))
 
@@ -172,7 +210,9 @@ class WikiGameAsyncWithLayers(WikiGame):
 
                 async with self.limiter:
                     new_tasks.append(asyncio.create_task(
-                        self.make_request(page, backlinks, end)
+                        self.make_request(page, backlinks, end, session)
                     ))
 
             tasks = new_tasks
+
+        await session.close()

@@ -29,19 +29,22 @@ class WikiGameSmart(WikiGame):
 
         return value
 
-    def play(self, start_page_name: str, end_page_name: str, max_depth: int = None):
-        base = "Capitalism"
+    def play(self, start_page_name: str, end_page_name: str,  debug:bool=True, lang:str="ru"):
+        base = "Земля"
+        t1 = time.time()
         path_to = self.play_smart(start_page_name, base).page_names
         path_from = self.play_smart_backlinks(end_page_name, base).page_names[::-1]
-
+        t2 = time.time()
         path_from.pop(0)
         path_to += path_from
 
         logger.success("Path is:\n\t" + " -> ".join([f"'{p}'" for p in path_to]))
 
+        logger.success(f"Time is {t2 - t1}")
+
         return path_to
 
-    def play_smart(self, start_page_name: str, end_page_name: str, max_depth: int = None) -> Optional[Path]:
+    def play_smart(self, start_page_name: str, end_page_name: str) -> Optional[Path]:
         logger.info(
             "Started playing\n\t" +
             f"Start page: '{start_page_name}'\n\t" +

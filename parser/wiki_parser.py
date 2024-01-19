@@ -10,7 +10,7 @@ from model.link import Link
 
 
 class WikiParser(ABC):
-    URL = 'https://en.wikipedia.org/w/api.php'
+    URL = 'https://ru.wikipedia.org/w/api.php'
 
     @abstractmethod
     def get_links(self, page_name: str) -> set[str]:

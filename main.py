@@ -7,6 +7,7 @@ from game.wiki_game_dumb import WikiGameDumb
 from game.wiki_game_smart import WikiGameSmart
 from game.wiki_game_async import WikiGameAsync
 from game.wiki_game_async_layers import WikiGameAsyncWithLayers
+import warnings
 
 if __name__ == '__main__':
     argumentParser = ArgumentParser(
@@ -40,7 +41,6 @@ if __name__ == '__main__':
     if wiki_game is None:
         logger.error("Incorrect game_old type.")
         exit(-1)
-
     path = wiki_game.play(args.start, args.end, debug=True, lang=args.language)
 
     print(path)

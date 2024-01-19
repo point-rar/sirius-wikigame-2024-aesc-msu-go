@@ -5,7 +5,7 @@ import asyncio
 import aiohttp
 
 import warnings
-
+import threading
 import joblib
 
 from joblib import Parallel, delayed
@@ -34,26 +34,41 @@ class WikiGameAsync(WikiGame):
         self.debug = True
         self.URL = 'https://ru.wikipedia.org/w/api.php'
         self.wiki_parser = WikiParserSmarter()
-        self.cost, self.used = dict(), set()
-        self.limiter = AsyncLimiter(10, 0.1)
+        self.limiter = AsyncLimiter(16, 0.01)
+        self.path_to = []
+        self.path_from = []
+
+    def run_path_to(self, *args):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        self.ioloop = asyncio.get_event_loop()
+        loop = asyncio.get_event_loop()
+        self.path_to = loop.run_until_complete(self.find_path(args[0], args[1], args[2])).page_names
+        loop.close()
+        return "ty pidor"
+    
+    def run_path_from(self, *args):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop = asyncio.get_event_loop()
+        self.path_from = loop.run_until_complete(self.find_path(args[0], args[1], args[2])).page_names[::-1]
+        loop.close()
+        return "ty tozhe pidor"
 
     def play(self, start: str, end: str, debug: bool = True, lang: str = "ru"):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
+            warnings.simplefilter("ignore", category=RuntimeWarning)
             self.URL = 'https://' + lang + '.wikipedia.org/w/api.php'
             self.debug = debug
             mid = ''
             if lang == 'ru':
-                mid = "Земля"
+                mid = "Россия"
             else:
                 mid = "Capitalism"
-            self.session = aiohttp.ClientSession()
+            # self.session = aiohttp.ClientSession()
 
             logger.info("Heating")
-            self.ioloop.run_until_complete(heat(self.URL, self.session))
+            # self.ioloop.run_until_complete(heat(self.URL, self.session))
 
             if self.debug:
                 logger.debug(
@@ -64,27 +79,34 @@ class WikiGameAsync(WikiGame):
 
             t1 = time.time()
 
-            path_to = self.ioloop.run_until_complete(self.find_path(start, mid, False)).page_names
-            path_from = self.ioloop.run_until_complete(self.find_path(end, mid, True)).page_names[::-1]
-            path_from.pop(0)
+            thread1 = threading.Thread(target=self.run_path_to, args=(start, mid, False))
+            thread2 = threading.Thread(target=self.run_path_from, args=(end, mid, True))
 
-            path_to += path_from
+            thread1.start()
+            thread2.start()
+
+            thread1.join()
+            thread2.join()
+
+            print(self.path_from)
+
+            self.path_from.pop(0)
+            self.path_to += self.path_from
             t2 = time.time()
 
             if self.debug:
-                logger.success("Path is:\n\t" + " -> ".join([f"'{p}'" for p in path_to]))
+                logger.success("Path is:\n\t" + " -> ".join([f"'{p}'" for p in self.path_to]))
             logger.success(f"Time is {t2 -t1}")
+            exit(-1)
 
-            asyncio.run(self.session.close())
-            self.ioloop.stop()
+            # asyncio.run(self.session.close())
+            # self.ioloop.stop()
 
-            self.used.clear()
-            self.cost.clear()
             # return path_to
             return t2 - t1
         # self.session.close()
 
-    async def make_request(self, cur_page: Page, backlinks: bool, end_page_name: str):
+    async def make_request(self, cur_page: Page, backlinks: bool, end_page_name: str, session):
         if backlinks:
             params_query = {
                 'action': 'query',
@@ -109,7 +131,7 @@ class WikiGameAsync(WikiGame):
             )
 
         async with self.limiter:
-            async with self.session.get(self.URL, params=params_query) as response:
+            async with session.get(self.URL, params=params_query) as response:
 
                 data = await response.text()
                 data = json.loads(data)
@@ -136,13 +158,16 @@ class WikiGameAsync(WikiGame):
     async def find_path(self, start: str, end: str, backlinks: bool):
         start_page = Page(start, 0)
 
-        self.used.add(start)
+        used =  set()
+
+        used.add(start)
 
         pr_q = queue.PriorityQueue(maxsize=0)
+        session = aiohttp.ClientSession()
 
         tasks = [
             asyncio.create_task(
-                self.make_request(start_page, backlinks, end)
+                self.make_request(start_page, backlinks, end, session)
             )
         ]
 
@@ -160,12 +185,12 @@ class WikiGameAsync(WikiGame):
             for list_links in new_links:
                 for cost, page in list_links:
                     if end == page.page_name:
+                        await session.close()
                         return page.path_to_root()
-                    if page.page_name in self.used:
+                    if page.page_name in used:
                         continue
 
-                    self.used.add(page.page_name)
-                    self.cost[page.page_name] = cost
+                    used.add(page.page_name)
                     pr_q.put((-cost, page))
 
             new_tasks = []
@@ -177,7 +202,7 @@ class WikiGameAsync(WikiGame):
 
                 async with self.limiter:
                     new_tasks.append(asyncio.create_task(
-                        self.make_request(cur_page, backlinks, end)
+                        self.make_request(cur_page, backlinks, end, session)
                     ))
 
             tasks = list(pending) + new_tasks
